@@ -128,7 +128,16 @@ public class JPAPlugin extends PlayPlugin {
         // }
         //
         // This is really hacky. We should move to something better than Hibernate like EBEAN
-        cfg.setInterceptor(new PlayInterceptor());
+        String implementation = Play.configuration.getProperty("jpa.interceptor", "play.db.jpa.PlayInterceptor");
+        try {
+            cfg.setInterceptor((PlayInterceptor) Play.classloader.loadClass(implementation).newInstance());
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         if (Play.configuration.getProperty("jpa.debugSQL", "false").equals("true")) {
             org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(Level.ALL);
