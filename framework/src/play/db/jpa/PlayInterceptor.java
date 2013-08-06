@@ -38,7 +38,7 @@ public class PlayInterceptor extends EmptyInterceptor {
                 }
             }
         } else {
-            System.out.println("HOO: Case not handled !!!");
+            throw new RuntimeException("HOO: Case not handled !!!");
         }
         return super.onCollectionUpdate(collection, key);
     }
@@ -55,7 +55,7 @@ public class PlayInterceptor extends EmptyInterceptor {
                 }
             }
         } else {
-            System.out.println("HOO: Case not handled !!!");
+            throw new RuntimeException("HOO: Case not handled !!!");
         }
 
         return super.onCollectionRecreate(collection, key);
@@ -73,7 +73,7 @@ public class PlayInterceptor extends EmptyInterceptor {
                 }
             }
         } else {
-            System.out.println("HOO: Case not handled !!!");
+            throw new RuntimeException("HOO: Case not handled !!!");
         }
         return super.onCollectionRemove(collection, key);
     }
