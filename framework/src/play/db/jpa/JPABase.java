@@ -136,24 +136,18 @@ public class JPABase implements Serializable, play.db.Model {
                         continue;
                     }
                     if (value instanceof PersistentMap) {
-                        if (((PersistentMap) value).wasInitialized()) {
+                        cascadeOrphans(this, (PersistentCollection) value, willBeSaved);
 
-                            cascadeOrphans(this, (PersistentCollection) value, willBeSaved);
-
-                            for (Object o : ((Map) value).values()) {
-                                saveAndCascadeIfJPABase(o, willBeSaved);
-                            }
+                        for (Object o : ((Map) value).values()) {
+                            saveAndCascadeIfJPABase(o, willBeSaved);
                         }
                         continue;
                     }
                     if (value instanceof PersistentCollection) {
-                        if (((PersistentCollection) value).wasInitialized()) {
+                        cascadeOrphans(this, (PersistentCollection) value, willBeSaved);
 
-                            cascadeOrphans(this, (PersistentCollection) value, willBeSaved);
-
-                            for (Object o : (Collection) value) {
-                                saveAndCascadeIfJPABase(o, willBeSaved);
-                            }
+                        for (Object o : (Collection) value) {
+                            saveAndCascadeIfJPABase(o, willBeSaved);
                         }
                         continue;
                     }
@@ -190,9 +184,11 @@ public class JPABase implements Serializable, play.db.Model {
                 Type ct = cp.getElementType();
                 if (ct instanceof EntityType) {
                     String entityName = ((EntityType) ct).getAssociatedEntityName(session.getFactory());
-                    Collection orphans = ce.getOrphans(entityName, persistentCollection);
-                    for (Object o : orphans) {
-                        saveAndCascadeIfJPABase(o, willBeSaved);
+                    if (ce.getSnapshot() != null) {
+                        Collection orphans = ce.getOrphans(entityName, persistentCollection);
+                        for (Object o : orphans) {
+                            saveAndCascadeIfJPABase(o, willBeSaved);
+                        }
                     }
                 }
             }
