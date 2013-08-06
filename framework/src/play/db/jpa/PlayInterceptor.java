@@ -7,6 +7,16 @@ import org.hibernate.EmptyInterceptor;
 import org.hibernate.collection.PersistentCollection;
 import org.hibernate.type.Type;
 
+// Explicit SAVE for JPABase is implemented here
+// ~~~~~~
+// We've hacked the org.hibernate.event.def.AbstractFlushingEventListener line 271, to flush collection update,remove,recreation
+// only if the owner will be saved or if the targeted entity will be saved (avoid the org.hibernate.HibernateException: Found two representations of same collection)
+// As is:
+// if (session.getInterceptor().onCollectionUpdate(coll, ce.getLoadedKey())) {
+//      actionQueue.addAction(...);
+// }
+//
+// This is really hacky. We should move to something better than Hibernate like EBEAN
 public class PlayInterceptor extends EmptyInterceptor {
     @Override
     public int[] findDirty(Object o, Serializable id, Object[] arg2, Object[] arg3, String[] arg4, Type[] arg5) {
