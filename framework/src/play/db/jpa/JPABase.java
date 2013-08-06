@@ -157,6 +157,12 @@ public class JPABase implements Serializable, play.db.Model {
                         }
                         continue;
                     }
+                    if (value instanceof Collection) {
+                        for (Object o : (Collection) value) {
+                            saveAndCascadeIfJPABase(o, willBeSaved);
+                        }
+                        continue;
+                    }
                     if (value instanceof HibernateProxy && value instanceof JPABase) {
                         if (!((HibernateProxy) value).getHibernateLazyInitializer().isUninitialized()) {
                             ((JPABase) ((HibernateProxy) value).getHibernateLazyInitializer().getImplementation()).saveAndCascade(willBeSaved);
