@@ -16,13 +16,15 @@ public class StreamChunkAggregator extends SimpleChannelUpstreamHandler {
 
     private volatile HttpMessage currentMessage;
     private volatile OutputStream out;
-    private final static int maxContentLength = Integer.valueOf(Play.configuration.getProperty("play.netty.maxContentLength", "-1"));
+    private final int maxContentLength;
     private volatile File file;
 
     /**
      * Creates a new instance.
      */
-    public StreamChunkAggregator() { }
+    public StreamChunkAggregator(int maxContentLength) {
+        this.maxContentLength = maxContentLength;
+    }
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
